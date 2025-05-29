@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 class Vector2
 {
 public:
