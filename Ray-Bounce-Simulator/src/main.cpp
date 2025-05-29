@@ -117,5 +117,27 @@ public:
 
 int main()
 {
+	/*
+	Start
+	1. Make a sphere
+	2. Make a ray (with starting point and direction)
+	3. Set a bounce limit (like 3)
+
+	Loop
+	1. Repeat up to 3 times:
+		Does the ray hit the sphere?
+		2. If no -> stop and say "no hit, done."
+		3. If yes:
+			- Find the exact spot it hits
+			- Get the surface normal at that spot.
+			- Show the hit point (print it).
+			- Bounce the ray: calculate its new direction.
+			- Move the ray's starting point to the hit point.
+			- Use the new direction to keep going.
+
+	End
+	1. When done bouncing or no hit -> stop.
+	*/
+
 	return 0; // Program has successfully run
 }
