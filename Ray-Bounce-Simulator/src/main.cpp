@@ -11,27 +11,28 @@ public:
 
 	const Vector2 operator+(const Vector2& other) // Addition
 	{
-		return (x + other.x, y + other.y);
+		return Vector2(x + other.x, y + other.y);
 	}
 
 	const Vector2 operator-(const Vector2& other) // Subtract
 	{
-		return (x - other.x, y - other.y);
+		return Vector2(x - other.x, y - other.y);
 	}
 
 	const float dot(const Vector2& other) // Dot product
 	{
-		return (x * other.x, y * other.y);
+		return (x * other.x + y * other.y);
 	}
 	
-	void normalize() // Normalize vector
+	Vector2 normalized() // Normalize vector
 	{
 		float magnitude = std::sqrt((x * x) + (y * y));
 		if (magnitude > 0)
 		{
-			x /= magnitude;
-			y /= magnitude;
+			return Vector2(x / magnitude, y / magnitude);
 		}
+
+		return Vector2(0, 0);
 	}
 
 	const Vector2 reflect(const Vector2& normal) // Reflect
@@ -46,47 +47,72 @@ public:
 
 class Surface
 {
-	/*
-		- Optionally calculate surface normals for reflection logic.
-	*/
+	// Holds two endpoints, calculates surface normals.
 public:
-	Vector2 a{};
-	Vector2 b{};
+	Vector2 aEndpt{};
+	Vector2 bEndpt{};
+
+	std::pair<Vector2, Vector2> calculateNormals()
+	{
+		Vector2 dir{ bEndpt - aEndpt };
+		Vector2 unitDir = dir.normalized();
+
+		// Perpendicular vectors
+		Vector2 normal1(unitDir.y, -unitDir.x);
+		Vector2 normal2(-unitDir.y, unitDir.x);
+
+		return { normal1, normal2 };
+	}
 };
 
 class Ray
 {
-	/*
-		- Implement a method to calculate the intersection with a surface.
-		- Implement a reflection method to generate a new ray after hitting a surface.
-	*/
 public:
 	Vector2 origin{};
 	Vector2 direction{};
 
 	void intersection()
+		// calculate the intersection with a surface.
 	{
 
 	}
 
 	void rayReflection()
+		// a reflection method to generate a new ray after hitting a surface.
 	{
 
 	}
 };
 
-/*	- Create a Scene class that holds surfaces.
-		- Simulate a ray bounce through multiple surfaces.
-		- Store and display ray segments after each bounce.
-*/
 class Scene
 {
+	/*
+		- Simulate a ray bounce through multiple surfaces.
+		- Store and display ray segments after each bounce.
+	*/
+public:
+	Vector2 surfaces[]; // Holds surfaces
 
 };
 
 int main()
 {
 	/* Prompt user to enter origin of ray, direction of ray, and # of bounces.*/
+	std::cout << "Enter origin of ray (x y): ";
+	int xOrigin{};
+	int yOrigin{};
+	std::cin >> xOrigin >> yOrigin;
+
+	std::cout << "Enter direction of ray (dx dy): ";
+	int xDirection{};
+	int yDirection{};
+	std::cin >> xDirection >> yDirection;
+
+	std::cout << "Enter number of bounces: ";
+	int numBounces{};
+	std::cin >> numBounces;
+
+
 
 	/*				Initialization
 		- Define several surfaces and add them to a scene.
