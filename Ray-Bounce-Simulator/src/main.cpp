@@ -125,7 +125,7 @@ public:
 		float t0 = (-b - sqrtD) / (2.0f * a);
 		float t1 = (-b + sqrtD) / (2.0f * a);
 
-		const float epsilon = 1e-3f;
+		const float epsilon = 0.5;
 
 		// Find closest valid t greater than epsilon and less than current t
 		if (t0 > epsilon && t0 < t)
@@ -153,6 +153,7 @@ int main()
 	std::cout << "Enter the center point of your sphere (x y z): "; // Center point of sphere
 	float x_center{}, y_center{}, z_center{};
 	std::cin >> x_center >> y_center >> z_center;
+	// Allocate memory on heap for sphere obj
 	Sphere* sphere = new Sphere(Vector3(x_center, y_center, z_center), radius);
 
 	std::cout << "Enter the origin of your ray (x y z): "; // Ray origin
@@ -168,20 +169,21 @@ int main()
 	int bounce_limit{};
 	std::cin >> bounce_limit;
 
-	const float epsilon = 0.1f; // Create an offset to avoid self-intersections
+	const float epsilon = 0.5f; // Create an offset to avoid self-intersections
 
 	for (int i = 0; i < bounce_limit; ++i)
 	{
 		float t = std::numeric_limits<float>::max();
-		if (sphere->intersect(ray, t) && t > epsilon)
+		if (sphere->intersect(ray, t) && t > epsilon) // If ray intersects with sphere
 		{
-			Vector3 hitPoint = ray.pointAtParameter(t);
-			Vector3 normal = (hitPoint - sphere->center).normalized();
+			Vector3 hitPoint = ray.pointAtParameter(t); // Hitpoint
+			Vector3 normal = (hitPoint - sphere->center).normalized(); // Surface normal
 
 			hitPoint = hitPoint + normal * epsilon;
 
+			// Calculate how ray should reflect
 			Vector3 reflectedDirection = ray.direction - normal * 2.0f * ray.direction.dot(normal);
-			ray = Ray(hitPoint, reflectedDirection);
+			ray = Ray(hitPoint, reflectedDirection); // Reflect ray
 
 			std::cout << "Bounce " << i + 1 << ": Hit at ("
 				<< hitPoint.x << ", "
@@ -192,7 +194,7 @@ int main()
 				<< reflectedDirection.y << ", "
 				<< reflectedDirection.z << ")\n";
 		}
-		else
+		else // If ray doesn't intersect with sphere
 		{
 			std::cout << "No hit, done.\n";
 			break;
