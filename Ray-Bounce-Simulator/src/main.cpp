@@ -110,7 +110,6 @@ public:
 	};
 
 	bool intersect(const Ray& ray, float& t) const
-		// Returns true if ray intersects with sphere, false otherwise.
 	{
 		Vector3 oc = ray.origin - center;
 		float a = ray.direction.dot(ray.direction);
@@ -119,60 +118,66 @@ public:
 
 		float discriminant = b * b - 4 * a * c;
 
-		if (discriminant < 0) // If there is no hit
-		{
+		if (discriminant < 0)
 			return false;
-		}
-		else
+
+		float sqrtD = std::sqrt(discriminant);
+		float t0 = (-b - sqrtD) / (2.0f * a);
+		float t1 = (-b + sqrtD) / (2.0f * a);
+
+		const float epsilon = 1e-3f;
+
+		// Find closest valid t greater than epsilon and less than current t
+		if (t0 > epsilon && t0 < t)
 		{
-			// Return the nearest t value (smallest positive root)
-			t = (-b - std::sqrt(discriminant)) / (2.0f * a); // Closest point
-			if (t < 0)
-			{
-				t = (-b + std::sqrt(discriminant)) / (2.0f * a); // Second point
-				if (t < 0)
-					return false;
-			}
-			return true; // Hit
+			t = t0;
+			return true;
 		}
+		if (t1 > epsilon && t1 < t)
+		{
+			t = t1;
+			return true;
+		}
+
+		return false;
 	}
 };
 
 int main()
 {
 	// Start
-	std::cout << "Enter the radius of your sphere: ";
+	std::cout << "Enter the radius of your sphere: "; // Radius of sphere
 	float radius{};
 	std::cin >> radius;
 
-	std::cout << "Enter the center point of your sphere (x y z): ";
+	std::cout << "Enter the center point of your sphere (x y z): "; // Center point of sphere
 	float x_center{}, y_center{}, z_center{};
 	std::cin >> x_center >> y_center >> z_center;
 	Sphere* sphere = new Sphere(Vector3(x_center, y_center, z_center), radius);
 
-	std::cout << "Enter the origin of your ray (x y z): ";
+	std::cout << "Enter the origin of your ray (x y z): "; // Ray origin
 	float x_origin{}, y_origin{}, z_origin{};
 	std::cin >> x_origin >> y_origin >> z_origin;
 
-	std::cout << "Enter the direction of your ray (x y z): ";
+	std::cout << "Enter the direction of your ray (x y z): "; // Ray direction
 	float x_direction{}, y_direction{}, z_direction{};
 	std::cin >> x_direction >> y_direction >> z_direction;
 	Ray ray(Vector3(x_origin, y_origin, z_origin), Vector3(x_direction, y_direction, z_direction));
 
-	std::cout << "Enter the limit of bounces: ";
+	std::cout << "Enter the limit of bounces: "; // Bounce limit
 	int bounce_limit{};
 	std::cin >> bounce_limit;
 
+	const float epsilon = 1e-2f; // Create an offset to avoid self-intersections
+
 	for (int i = 0; i < bounce_limit; ++i)
 	{
-		float t = 5.0f;
-		if ((*sphere).intersect(ray, t))
+		float t = std::numeric_limits<float>::max();
+		if (sphere->intersect(ray, t) && t > epsilon)
 		{
 			Vector3 hitPoint = ray.pointAtParameter(t);
-			Vector3 normal = (hitPoint - (*sphere).center).normalized();
+			Vector3 normal = (hitPoint - sphere->center).normalized();
 
-			// Move the hit point slightly along the normal to prevent self-intersection
-			const float epsilon = 0.0001f;
 			hitPoint = hitPoint + normal * epsilon;
 
 			Vector3 reflectedDirection = ray.direction - normal * 2.0f * ray.direction.dot(normal);
