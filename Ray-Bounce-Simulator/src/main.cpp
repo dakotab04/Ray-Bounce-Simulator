@@ -61,6 +61,7 @@ public:
 		else
 		{
 			std::cerr << "Invalid. Cannot normalize 0.0 vector.\n";
+			return Vector3(0.0f, 0.0f, 0.0f);
 		}
 	}
 };
@@ -139,42 +140,59 @@ public:
 
 int main()
 {
-	// Start: this can be changed to prompt the user later.
-	Sphere sphere(Vector3(0.0f, 0.0f, 0.0f), 10.0f); // Create sphere with radius of 10 and center of 0, 0, 0
-	Ray ray(Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f)); // Create ray with origin of 0, 0, 0 and direction of 1, 1, 1
-	int bounce_limit = 3; // Set bounce limit
+	// Start
+	std::cout << "Enter the radius of your sphere: ";
+	float radius{};
+	std::cin >> radius;
 
-	for (int i = 0; i < bounce_limit; ++i) // For every bounce:
+	std::cout << "Enter the center point of your sphere (x y z): ";
+	float x_center{}, y_center{}, z_center{};
+	std::cin >> x_center >> y_center >> z_center;
+	Sphere sphere(Vector3(x_center, y_center, z_center), radius);
+
+	std::cout << "Enter the origin of your ray (x y z): ";
+	float x_origin{}, y_origin{}, z_origin{};
+	std::cin >> x_origin >> y_origin >> z_origin;
+
+	std::cout << "Enter the direction of your ray (x y z): ";
+	float x_direction{}, y_direction{}, z_direction{};
+	std::cin >> x_direction >> y_direction >> z_direction;
+	Ray ray(Vector3(x_origin, y_origin, z_origin), Vector3(x_direction, y_direction, z_direction));
+
+	std::cout << "Enter the limit of bounces: ";
+	int bounce_limit{};
+	std::cin >> bounce_limit;
+
+	for (int i = 0; i < bounce_limit; ++i)
 	{
-		float t = 5.0f; // t is a scalar that stretches or shrinks the direction vector
-		if (sphere.intersect(ray, t)) // If ray hits the sphere:
+		float t = 5.0f;
+		if (sphere.intersect(ray, t))
 		{
-			// Handle bounce logic here
+			Vector3 hitPoint = ray.pointAtParameter(t);
+			Vector3 normal = (hitPoint - sphere.center).normalized();
+
+			// Move the hit point slightly along the normal to prevent self-intersection
+			const float epsilon = 0.0001f;
+			hitPoint = hitPoint + normal * epsilon;
+
+			Vector3 reflectedDirection = ray.direction - normal * 2.0f * ray.direction.dot(normal);
+			ray = Ray(hitPoint, reflectedDirection);
+
+			std::cout << "Bounce " << i + 1 << ": Hit at ("
+				<< hitPoint.x << ", "
+				<< hitPoint.y << ", "
+				<< hitPoint.z << "), "
+				<< "Reflected direction: ("
+				<< reflectedDirection.x << ", "
+				<< reflectedDirection.y << ", "
+				<< reflectedDirection.z << ")\n";
 		}
-		else // If ray doesn't hit the sphere:
+		else
 		{
 			std::cout << "Not hit, done.\n";
 			break;
 		}
 	}
 
-
-	/*
-	Loop
-	1. Repeat up to 3 times:
-		Does the ray hit the sphere?
-		2. If no -> stop and say "no hit, done."
-		3. If yes:
-			- Find the exact spot it hits
-			- Get the surface normal at that spot.
-			- Show the hit point (print it).
-			- Bounce the ray: calculate its new direction.
-			- Move the ray's starting point to the hit point.
-			- Use the new direction to keep going.
-
-	End
-	1. When done bouncing or no hit -> stop.
-	*/
-
-	return 0; // Program has successfully run
+	return 0;
 }
