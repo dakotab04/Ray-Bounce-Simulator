@@ -168,7 +168,7 @@ int main()
 	int bounce_limit{};
 	std::cin >> bounce_limit;
 
-	const float epsilon = 1e-2f; // Create an offset to avoid self-intersections
+	const float epsilon = 0.1f; // Create an offset to avoid self-intersections
 
 	for (int i = 0; i < bounce_limit; ++i)
 	{
@@ -194,7 +194,7 @@ int main()
 		}
 		else
 		{
-			std::cout << "Not hit, done.\n";
+			std::cout << "No hit, done.\n";
 			break;
 		}
 	}
