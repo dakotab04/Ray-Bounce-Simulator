@@ -117,12 +117,27 @@ public:
 
 int main()
 {
-	/*
-	Start
-	1. Make a sphere
-	2. Make a ray (with starting point and direction)
-	3. Set a bounce limit (like 3)
+	// Start: this can be changed to prompt the user later.
+	Sphere sphere(Vector3(0.0f, 0.0f, 0.0f), 10.0f); // Create sphere with radius of 10 and center of 0, 0, 0
+	Ray ray(Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f)); // Create ray with origin of 0, 0, 0 and direction of 1, 1, 1
+	int bounce_limit = 3; // Set bounce limit
 
+	for (int i = 0; i < bounce_limit; ++i) // For every bounce:
+	{
+		float t = 5.0f; // t is a scalar that stretches or shrinks the direction vector
+		if (sphere.intersect(ray, t)) // If ray hits the sphere:
+		{
+			// Handle bounce logic here
+		}
+		else // If ray doesn't hit the sphere:
+		{
+			std::cout << "Not hit, done.\n";
+			break;
+		}
+	}
+
+
+	/*
 	Loop
 	1. Repeat up to 3 times:
 		Does the ray hit the sphere?
