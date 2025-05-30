@@ -111,7 +111,29 @@ public:
 	bool intersect(const Ray& ray, float& t) const
 		// Returns true if ray intersects with sphere, false otherwise.
 	{
+		Vector3 oc = ray.origin - center;
+		float a = ray.direction.dot(ray.direction);
+		float b = 2.0f * oc.dot(ray.direction);
+		float c = oc.dot(oc) - radius * radius;
 
+		float discriminant = b * b - 4 * a * c;
+
+		if (discriminant < 0) // If there is no hit
+		{
+			return false;
+		}
+		else
+		{
+			// Return the nearest t value (smallest positive root)
+			t = (-b - std::sqrt(discriminant)) / (2.0f * a); // Closest point
+			if (t < 0)
+			{
+				t = (-b + std::sqrt(discriminant)) / (2.0f * a); // Second point
+				if (t < 0)
+					return false;
+			}
+			return true; // Hit
+		}
 	}
 };
 
