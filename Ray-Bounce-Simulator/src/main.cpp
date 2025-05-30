@@ -148,7 +148,7 @@ int main()
 	std::cout << "Enter the center point of your sphere (x y z): ";
 	float x_center{}, y_center{}, z_center{};
 	std::cin >> x_center >> y_center >> z_center;
-	Sphere sphere(Vector3(x_center, y_center, z_center), radius);
+	Sphere* sphere = new Sphere(Vector3(x_center, y_center, z_center), radius);
 
 	std::cout << "Enter the origin of your ray (x y z): ";
 	float x_origin{}, y_origin{}, z_origin{};
@@ -166,10 +166,10 @@ int main()
 	for (int i = 0; i < bounce_limit; ++i)
 	{
 		float t = 5.0f;
-		if (sphere.intersect(ray, t))
+		if ((*sphere).intersect(ray, t))
 		{
 			Vector3 hitPoint = ray.pointAtParameter(t);
-			Vector3 normal = (hitPoint - sphere.center).normalized();
+			Vector3 normal = (hitPoint - (*sphere).center).normalized();
 
 			// Move the hit point slightly along the normal to prevent self-intersection
 			const float epsilon = 0.0001f;
@@ -193,6 +193,8 @@ int main()
 			break;
 		}
 	}
+
+	delete sphere;
 
 	return 0;
 }
