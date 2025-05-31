@@ -125,7 +125,7 @@ public:
 		float t0 = (-b - sqrtD) / (2.0f * a);
 		float t1 = (-b + sqrtD) / (2.0f * a);
 
-		const float epsilon = 0.5;
+		const float epsilon = 1e-4f;
 
 		// Find closest valid t greater than epsilon and less than current t
 		if (t0 > epsilon && t0 < t)
@@ -169,7 +169,7 @@ int main()
 	int bounce_limit{};
 	std::cin >> bounce_limit;
 
-	const float epsilon = 0.5f; // Create an offset to avoid self-intersections
+	const float epsilon = 1e-4f; // Create an offset to avoid self-intersections
 
 	for (int i = 0; i < bounce_limit; ++i)
 	{
