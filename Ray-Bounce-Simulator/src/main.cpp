@@ -154,7 +154,7 @@ int main()
 	float x_center{}, y_center{}, z_center{};
 	std::cin >> x_center >> y_center >> z_center;
 	// Allocate memory on heap for sphere obj
-	Sphere* sphere = new Sphere(Vector3(x_center, y_center, z_center), radius);
+	Sphere sphere(Vector3(x_center, y_center, z_center), radius);
 
 	std::cout << "Enter the origin of your ray (x y z): "; // Ray origin
 	float x_origin{}, y_origin{}, z_origin{};
@@ -174,10 +174,10 @@ int main()
 	for (int i = 0; i < bounce_limit; ++i)
 	{
 		float t = std::numeric_limits<float>::max();
-		if (sphere->intersect(ray, t) && t > epsilon) // If ray intersects with sphere
+		if (sphere.intersect(ray, t) && t > epsilon) // If ray intersects with sphere
 		{
 			Vector3 hitPoint = ray.pointAtParameter(t); // Hitpoint
-			Vector3 normal = (hitPoint - sphere->center).normalized(); // Surface normal
+			Vector3 normal = (hitPoint - sphere.center).normalized(); // Surface normal
 
 			hitPoint = hitPoint + normal * epsilon;
 
@@ -200,8 +200,6 @@ int main()
 			break;
 		}
 	}
-
-	delete sphere;
 
 	return 0;
 }
